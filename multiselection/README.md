@@ -1,16 +1,74 @@
-# React + Vite
+# Multi-Selection Accordion (React + Vite + Tailwind)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small React UI demo: an accordion/FAQ component that supports **single selection** and **multi selection** mode (toggle button).
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Accordion UI**: click a question to expand/collapse its answer
+- **Single-select mode**: only one item can be open at a time
+- **Multi-select mode**: open multiple answers at once
+- **Tailwind styling**: clean layout + hover/transition effects
 
-## React Compiler
+## Tech stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React** (Vite)
+- **Tailwind CSS** (via `@tailwindcss/vite`)
+- **ESLint** (React Hooks + React Refresh configs)
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the dev server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+Lint:
+
+```bash
+npm run lint
+```
+
+## Project structure
+
+```txt
+src/
+  Component/
+    AccordianComponent.jsx   # accordion w/ single + multi select logic
+    NavBar.jsx               # top nav
+    Button.jsx               # GitHub link button
+  pages/
+    Home.jsx                 # composes NavBar + accordion
+  services/
+    index.js                 # sample FAQ data
+  App.jsx
+  main.jsx
+  index.css                  # Tailwind import
+```
+
+## Customize the data
+
+Edit the FAQ items in `src/services/index.js` (each item has `id`, `question`, `answer`).
+
+## Notes
+
+- **Multi-select toggle** is controlled inside `src/Component/AccordianComponent.jsx`.
+- This is a client-only demo app (no backend).
