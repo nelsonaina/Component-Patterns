@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function ColorComponent() {
     const [color, setColor] = useState("#1f2f30");
     const [colorType, setColorType] = useState("hex");
+    const [copiedText, setCopiedText] = useState(true);
+    const copyTargetRef = useRef(null);
 
     function handleGenerateRandomColor(length) {
         return Math.floor(Math.random() * length);
@@ -25,21 +27,36 @@ function ColorComponent() {
         setColor(`rgb(${r},${g},${b})`);
     }
 
-    useEffect(()=> {
-        if(colorType === "rgb") {
+    useEffect(() => {
+        if (colorType === "rgb") {
             handleCreateRgbColor();
-        }
-        else{
+        } else {
             handleCreateHexColor();
         }
     }, [colorType]);
 
+    useEffect(() => {
+        function handlePointerDown(event) {
+            if (
+                copyTargetRef.current &&
+                !copyTargetRef.current.contains(event.target)
+            ) {
+                setCopiedText(true);
+            }
+        }
+        document.addEventListener("mousedown", handlePointerDown);
+        return () =>
+            document.removeEventListener("mousedown", handlePointerDown);
+    }, []);
+
+    function handleCopyToClipboard() {
+        navigator.clipboard.writeText(color).then(() => setCopiedText(false));
+    }
+
     const btnBase =
         "rounded-lg px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2";
-    const btnPrimary =
-        `${btnBase} bg-blue-600 text-white shadow-sm hover:bg-blue-700`;
-    const btnSecondary =
-        `${btnBase} border border-gray-200 bg-gray-50 text-gray-800 hover:bg-gray-100`;
+    const btnPrimary = `${btnBase} bg-blue-600 text-white shadow-sm hover:bg-blue-700`;
+    const btnSecondary = `${btnBase} border border-gray-200 bg-gray-50 text-gray-800 hover:bg-gray-100`;
 
     return (
         <div className="w-full max-w-2xl">
@@ -78,9 +95,13 @@ function ColorComponent() {
 
                 <div
                     style={{ backgroundColor: color }}
-                    className="mt-6 flex min-h-[180px] items-center justify-center rounded-lg border border-gray-200 p-6 shadow-inner"
+                    className="mt-6 flex min-h-75 items-center justify-center rounded-lg border border-gray-200 p-6 shadow-inner"
                 >
-                    <div className="rounded-lg bg-black/45 px-5 py-3 text-center shadow-lg backdrop-blur-sm">
+                    <div
+                        ref={copyTargetRef}
+                        onClick={() => handleCopyToClipboard()}
+                        className="rounded-lg bg-black/45 px-5 py-3 text-center shadow-lg backdrop-blur-sm"
+                    >
                         <h3 className="text-xs font-bold uppercase tracking-wide text-white/90">
                             {colorType === "rgb" ? "RGB color" : "Hex color"}
                         </h3>
@@ -88,6 +109,15 @@ function ColorComponent() {
                             {color}
                         </h2>
                     </div>
+                </div>
+                <div
+                    className={`flex justify-center overflow-hidden transition-[opacity,transform,max-height,margin-top] duration-300 ease-out ${
+                        copiedText
+                            ? "pointer-events-none mt-0 max-h-0 -translate-y-1 opacity-0"
+                            : "mt-3 max-h-14 translate-y-0 opacity-100"
+                    }`}
+                >
+                    Copied to clipboard!
                 </div>
             </div>
         </div>
